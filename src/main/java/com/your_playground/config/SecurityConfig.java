@@ -16,27 +16,13 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    // 🔥 SECURITY FILTER
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
                 .csrf(csrf -> csrf.disable())
-
-                // 🔥 Stateless (JWT future use)
-                .sessionManagement(session ->
-                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                )
-
                 .authorizeHttpRequests(auth -> auth
-                        // 🔥 public endpoints
-                        .requestMatchers(
-                                "/api/users/create",
-                                "/api/users/login"
-                        ).permitAll()
-
-                        // 🔥 everything else (for future)
-                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()
                 );
 
         return http.build();
