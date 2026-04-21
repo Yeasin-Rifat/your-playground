@@ -1,9 +1,11 @@
 package com.your_playground.controller;
 
-import com.your_playground.dto.user.UserRequestDTO;
-import com.your_playground.dto.user.UserResponseDTO;
+import com.your_playground.dto.LoginRequestDTO;
+import com.your_playground.dto.user.*;
 import com.your_playground.exception.errorhandler.ApiResponse;
 import com.your_playground.service.user.UserService;
+import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,41 +20,75 @@ public class UserController {
         this.userService = userService;
     }
 
-    // CREATE
+    // 🔥 CREATE (REGISTER)
     @PostMapping("/create")
-    public UserResponseDTO create(@RequestBody UserRequestDTO request) {
-        return userService.createUser(request);
-    }
+    public ResponseEntity<ApiResponse<UserResponseDTO>> create(
+            @Valid @RequestBody UserRequestDTO request) {
 
-    // GET ALL
-    @GetMapping
-    public List<UserResponseDTO> getAll() {
-        return userService.getAllUsers();
-    }
+        UserResponseDTO user = userService.createUser(request);
 
-    // GET BY ID
-    @GetMapping("/{id}")
-    public UserResponseDTO getById(@PathVariable Long id) {
-        return userService.getUserById(id);
-    }
-
-    // UPDATE
-    @PutMapping("/update/{id}")
-    public ApiResponse<UserResponseDTO> update(@PathVariable Long id,
-                                               @RequestBody UserRequestDTO request) {
-
-        UserResponseDTO updatedUser = userService.updateUser(id, request);
-
-        return new ApiResponse<>(
-                "Data updated successfully",
-                updatedUser
+        return ResponseEntity.ok(
+                new ApiResponse<>("User created successfully", user)
         );
     }
 
-    // DELETE
-    @DeleteMapping("delete/{id}")
-    public String delete(@PathVariable Long id) {
+    // 🔥 LOGIN
+    @PostMapping("/login")
+    public ResponseEntity<ApiResponse<UserResponseDTO>> login(
+            @RequestBody LoginRequestDTO request) {
+
+        UserResponseDTO user = userService.login(request);
+
+        return ResponseEntity.ok(
+                new ApiResponse<>("Login successful", user)
+        );
+    }
+
+    // 🔥 GET ALL
+    @GetMapping
+    public ResponseEntity<ApiResponse<List<UserResponseDTO>>> getAll() {
+
+        List<UserResponseDTO> users = userService.getAllUsers();
+
+        return ResponseEntity.ok(
+                new ApiResponse<>("Users fetched successfully", users)
+        );
+    }
+
+    // 🔥 GET BY ID
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse<UserResponseDTO>> getById(
+            @PathVariable Long id) {
+
+        UserResponseDTO user = userService.getUserById(id);
+
+        return ResponseEntity.ok(
+                new ApiResponse<>("User fetched successfully", user)
+        );
+    }
+
+    // 🔥 UPDATE
+    @PutMapping("/update/{id}")
+    public ResponseEntity<ApiResponse<UserResponseDTO>> update(
+            @PathVariable Long id,
+            @RequestBody UserRequestDTO request) {
+
+        UserResponseDTO updatedUser = userService.updateUser(id, request);
+
+        return ResponseEntity.ok(
+                new ApiResponse<>("Data updated successfully", updatedUser)
+        );
+    }
+
+    // 🔥 DELETE
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<ApiResponse<String>> delete(
+            @PathVariable Long id) {
+
         userService.deleteUser(id);
-        return "User deleted successfully";
+
+        return ResponseEntity.ok(
+                new ApiResponse<>("User deleted successfully", null)
+        );
     }
 }

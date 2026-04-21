@@ -1,5 +1,6 @@
 package com.your_playground.service.user;
 
+import com.your_playground.dto.LoginRequestDTO;
 import com.your_playground.dto.user.UserRequestDTO;
 import com.your_playground.dto.user.UserResponseDTO;
 
@@ -12,4 +13,5 @@ public interface UserService {
     UserResponseDTO getUserById(Long id);
     UserResponseDTO updateUser(Long id, UserRequestDTO request);
     void deleteUser(Long id);
+    UserResponseDTO login(LoginRequestDTO request);
 }
