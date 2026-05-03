@@ -1,4 +1,4 @@
-package com.your_playground.exception.errorhandler;
+package com.your_playground.errorhandler;
 
 import com.your_playground.exception.EmailAlreadyExistsException;
 import com.your_playground.exception.UserNotFoundException;

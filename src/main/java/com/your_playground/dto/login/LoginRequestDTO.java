@@ -1,4 +1,4 @@
-package com.your_playground.dto;
+package com.your_playground.dto.login;
 
 public class LoginRequestDTO {
     private String email;

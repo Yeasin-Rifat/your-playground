@@ -1,4 +1,4 @@
-package com.your_playground.exception.errorhandler;
+package com.your_playground.errorhandler;
 
 public class ApiResponse<T> {
 

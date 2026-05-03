@@ -1,8 +1,8 @@
 package com.your_playground.controller;
 
-import com.your_playground.dto.LoginRequestDTO;
+import com.your_playground.dto.login.LoginRequestDTO;
 import com.your_playground.dto.user.*;
-import com.your_playground.exception.errorhandler.ApiResponse;
+import com.your_playground.errorhandler.ApiResponse;
 import com.your_playground.service.user.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;

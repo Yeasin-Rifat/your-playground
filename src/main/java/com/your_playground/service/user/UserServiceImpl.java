@@ -1,6 +1,6 @@
 package com.your_playground.service.user;
 
-import com.your_playground.dto.LoginRequestDTO;
+import com.your_playground.dto.login.LoginRequestDTO;
 import com.your_playground.dto.user.*;
 import com.your_playground.entity.User;
 import com.your_playground.exception.EmailAlreadyExistsException;
