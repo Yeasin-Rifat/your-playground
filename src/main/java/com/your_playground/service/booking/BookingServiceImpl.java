@@ -74,11 +74,15 @@ public class BookingServiceImpl implements BookingService {
         return dto;
     }*/
 
-    @Override
+/*    @Override
     public BookingResponseDTO createBooking(BookingRequestDTO request) {
 
         User user = userRepository.findById(request.getUserId())
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
+
+        if (!user.getRole().equalsIgnoreCase("PLAYER")) {
+            throw new RuntimeException("Only PLAYER can book turf");
+        }
 
         Turf turf = turfRepository.findById(request.getTurfId())
                 .orElseThrow(() -> new TurfNotFoundException("Turf not found"));
@@ -121,6 +125,63 @@ public class BookingServiceImpl implements BookingService {
         payment.setBooking(booking);
 
         Booking savedBooking = bookingRepository.save(booking);
+        paymentRepository.save(payment);
+
+        return mapToDTO(savedBooking);
+    }*/
+
+    @Override
+    public BookingResponseDTO createBooking(BookingRequestDTO request) {
+
+        User user = userRepository.findById(request.getUserId())
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+
+        if (!user.getRole().equalsIgnoreCase("PLAYER")) {
+            throw new RuntimeException("Only PLAYER can book turf");
+        }
+
+        Turf turf = turfRepository.findById(request.getTurfId())
+                .orElseThrow(() -> new TurfNotFoundException("Turf not found"));
+
+        boolean exists = bookingRepository.existsByTurf_TurfIdAndDateAndTimeSlot(
+                request.getTurfId(),
+                request.getDate(),
+                request.getTimeSlot()
+        );
+
+        if (exists) {
+            throw new SlotAlreadyExist("Slot already booked");
+        }
+
+        Booking booking = new Booking();
+        booking.setUser(user);
+        booking.setTurf(turf);
+        booking.setDate(request.getDate());
+        booking.setTimeSlot(request.getTimeSlot());
+
+        Payment payment = new Payment();
+
+        // 🔥 PAYMENT LOGIC
+        if (request.getPaymentDone() != null && request.getPaymentDone()) {
+
+            if (request.getAmount() == null || request.getAmount() < 500) {
+                throw new RuntimeException("Minimum 500 taka required");
+            }
+
+            payment.setStatus("SUCCESS");
+            booking.setStatus(BookingStatus.CONFIRMED);
+
+        } else {
+            payment.setStatus("PENDING");
+            booking.setStatus(BookingStatus.PENDING);
+        }
+
+        payment.setAmount(request.getAmount());
+        payment.setPaymentMethod(request.getPaymentMethod());
+
+        Booking savedBooking = bookingRepository.save(booking);
+
+        payment.setBooking(savedBooking);
         paymentRepository.save(payment);
 
         return mapToDTO(savedBooking);
